@@ -1,0 +1,36 @@
+{
+  "company": {
+    "entity_type": "PM",
+    "age_months": 24,
+    "industry": "manufacturing",
+    "exports": false
+  },
+  "financials": {
+    "monthly_revenue": 600000,
+    "annual_revenue": 7200000,
+    "govt_revenue_pct": 10,
+    "revenue_drop_pct": 0,
+    "cash": 200000,
+    "cash_in_90d": 1200000,
+    "cash_out_90d": 1500000,
+    "receivables": 800000,
+    "payables": 900000,
+    "client_concentration_pct": 45,
+    "invoice_days": 60
+  },
+  "need": {
+    "amount": 1000000,
+    "urgency_days": 10,
+    "use": "working_capital",
+    "preferred_term_days": 90
+  },
+  "risk": {
+    "credit_status": "good",
+    "collateral": false,
+    "eligible_invoices": true
+  },
+  "docs": {
+    "bank_statements": true,
+    "financial_statements": true
+  }
+}
