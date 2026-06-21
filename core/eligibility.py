@@ -23,6 +23,18 @@ _OPS = {
     "is_false": lambda a, b: a is False,
 }
 
+_FIELD_LABELS = {
+    "company.exports": "operaciones de exportación",
+    "company.age_months": "antigüedad de la empresa",
+    "risk.collateral": "colateral disponible",
+    "risk.eligible_invoices": "facturas elegibles",
+    "financials.monthly_revenue": "ingreso mensual",
+    "financials.annual_revenue": "ingreso anual",
+    "financials.govt_revenue_pct": "% de ingresos por gobierno",
+    "financials.revenue_drop_pct": "caída de ingresos",
+    "financials.invoice_days": "ciclo de pago de facturas",
+}
+
 #### DATACLASE
 class EligibilityResult:
     lender_id: str
@@ -30,6 +42,23 @@ class EligibilityResult:
     reasons: List[str]              # Motivo de Rechazo (vacío si elegible)
     missing_for_check: List[str]    # Campos que faltaron y no se pudieron evaluar
 
+
+## FUNCIONES
+def _describe_failed_condition(cond: dict, value, prefix: str) -> str:
+    field = cond["field"]
+    label = _FIELD_LABELS.get(field, field)
+    op = cond["op"]
+
+    if op == "is_true":
+        return f"{prefix}: se requiere {label}, pero el valor actual es 'no'"
+    if op == "is_false":
+        return f"{prefix}: se requiere que NO aplique {label}, pero el valor actual es 'sí'"
+
+    op_words = {">": "mayor a", ">=": "al menos", "<": "menor a",
+                "<=": "como máximo", "==": "igual a", "!=": "distinto de"}
+    target = cond.get("value")
+    return (f"{prefix}: {label} debe ser {op_words.get(op, op)} {target} "
+            f"(valor actual: {value})")
 
 def _get_field(case: CompanyCase, path: str) -> Optional[Any]:
     "Resuelve 'financials.monthly_revenue' -> case.financials.monthly_revenue"
@@ -69,10 +98,7 @@ def check_elegibility(case: CompanyCase, lender: dict) -> EligibilityResult:
             result = _OPS[cond["op"]](value, cond.get("value"))
 
             if not result:
-                reasons.append(
-                    f"No cumple requisito: {cond['field']} {cond['op']}"
-                    f"{cond.get('value')} (valor actual: {value})"
-                )
+                reasons.append(_describe_failed_condition(cond, value, "No cumple requisito"))
     
     for cond in elig.get("reject_if", []):
         value = _get_field(case, cond["field"])
@@ -87,10 +113,7 @@ def check_elegibility(case: CompanyCase, lender: dict) -> EligibilityResult:
             continue
         result = _OPS[cond["op"]](value, cond.get("value"))
         if result:
-            reasons.append(
-                f"Rechazado por regla: {cond['field']} {cond['op']} "
-                f"{cond.get('value')} (valor actual: {value})"
-            )
+            reasons.append(_describe_failed_condition(cond, value, "Rechazado por regla"))
 
     eligible = len(reasons) == 0
     return EligibilityResult(
