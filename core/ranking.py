@@ -28,6 +28,7 @@ _WEIGHTS = {
 }
 
 ### DATACLASES
+@dataclass
 class FitResult:
     lender_id: str
     score: float

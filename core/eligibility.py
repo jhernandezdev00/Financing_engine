@@ -36,6 +36,7 @@ _FIELD_LABELS = {
 }
 
 #### DATACLASE
+@dataclass
 class EligibilityResult:
     lender_id: str
     eligible: bool
@@ -93,12 +94,12 @@ def check_elegibility(case: CompanyCase, lender: dict) -> EligibilityResult:
                     f"(dato faltante)"
                 )
 
-                continue
+            continue
             
-            result = _OPS[cond["op"]](value, cond.get("value"))
+        result = _OPS[cond["op"]](value, cond.get("value"))
 
-            if not result:
-                reasons.append(_describe_failed_condition(cond, value, "No cumple requisito"))
+        if not result:
+            reasons.append(_describe_failed_condition(cond, value, "No cumple requisito"))
     
     for cond in elig.get("reject_if", []):
         value = _get_field(case, cond["field"])

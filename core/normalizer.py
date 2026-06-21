@@ -70,9 +70,9 @@ def from_dict(raw: dict) -> CompanyCase:
             else:
                 missing.append(f"{namespace}.{f.name}")
         
-        case.missing_fields = missing
-        case.contradictions = _detect_contradictions(case)
-        return case 
+    case.missing_fields = missing
+    case.contradictions = _detect_contradictions(case)
+    return case 
 
 def from_json(raw_json: str) -> CompanyCase:
     return from_dict(json.loads(raw_json))
