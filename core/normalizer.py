@@ -92,7 +92,7 @@ def from_csv(raw_csv: str) -> CompanyCase:
 
     return from_dict(nested)
 
-def apply_partial_Update(case: CompanyCase, updates: dict) -> CompanyCase:
+def apply_partial_update(case: CompanyCase, updates: dict) -> CompanyCase:
     for namespace, model_cls in _SUBMODELS.items():
         section = updates.get(namespace)
         if not section:

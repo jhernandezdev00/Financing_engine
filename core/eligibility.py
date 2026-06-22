@@ -73,7 +73,7 @@ def _evaluate_condition(case: CompanyCase, condition: dict) -> Optional[bool]:
 
     return op(value, target) if value is not None else None
 
-def check_elegibility(case: CompanyCase, lender: dict) -> EligibilityResult:
+def check_eligibility(case: CompanyCase, lender: dict) -> EligibilityResult:
     reasons: List[str] = []
     missing: List[str] = []
 
@@ -125,5 +125,5 @@ def check_elegibility(case: CompanyCase, lender: dict) -> EligibilityResult:
     )
 
 def check_all(case: CompanyCase, lenders: list) -> List[EligibilityResult]:
-    return[check_elegibility(case, i) for i in lenders]
+    return[check_eligibility(case, i) for i in lenders]
 
